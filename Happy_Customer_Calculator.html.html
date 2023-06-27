@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Happy Customer Calculator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+    }
+    
+    .container {
+      margin-top: 100px;
+    }
+    
+    .input-label {
+      font-weight: bold;
+      font-size: 18px;
+    }
+    
+    .input-box {
+      margin: 10px;
+      padding: 5px;
+      width: 200px;
+      font-size: 16px;
+    }
+    
+    .result-box {
+      margin-top: 20px;
+      padding: 10px;
+      border: 1px solid #ccc;
+      font-size: 18px;
+      background-color: #f9f9f9;
+    }
+    
+    .button {
+      margin-top: 10px;
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    
+    .button:hover {
+      background-color: #45a049;
+    }
+    
+    .slider {
+      width: 200px;
+      margin: 20px auto;
+    }
+    
+    .slider-thumb {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background-color: #4CAF50;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    
+    .slider-thumb:hover {
+      background-color: #45a049;
+    }
+    
+    .slider-track {
+      width: 100%;
+      height: 10px;
+      background-color: #ccc;
+      margin-top: 15px;
+      position: relative;
+    }
+    
+    .slider-fill {
+      height: 10px;
+      background-color: #4CAF50;
+    }
+    
+    .smiley {
+      font-size: 30px;
+      margin-top: 20px;
+    }
+    
+    .smiley-good {
+      color: green;
+    }
+    
+    .smiley-okay {
+      color: orange;
+    }
+    
+    .smiley-bad {
+      color: red;
+    }
+    
+    .product-list {
+      margin-top: 20px;
+      text-align: left;
+    }
+    
+    .product-item {
+      margin-bottom: 10px;
+    }
+    
+    .product-name {
+      font-weight: bold;
+      display: inline-block;
+      width: 200px;
+    }
+    
+    .product-price {
+      display: inline-block;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Happy Customer Calculator</h2>
+    <label for="user-input" class="input-label">Enter a value:</label>
+    <input type="number" id="user-input" class="input-box" placeholder="Enter Job Contract Total" />
+    <button onclick="calculate()">Calculate</button>
+    <div id="result" class="result-box"></div>
+    <div class="slider">
+      <div class="slider-track">
+        <div class="slider-fill"></div>
+        <div class="slider-thumb"></div>
+      </div>
+    </div>
+    <div id="smiley" class="smiley"></div>
+    <div id="product-section" style="display: none;">
+      <div class="product-list">
+        <h3>Recommended Products:</h3>
+        <div class="product-item">
+          <span class="product-name">Wireless Uplights</span>
+          <span class="product-price">$60 per light fixture</span>
+        </div>
+        <div class="product-item">
+          <span class="product-name">LCD Projection Pkg 7k6x10</span>
+          <span class="product-price">$750</span>
+        </div>
+        <div class="product-item">
+          <span class="product-name">K10 Speakers</span>
+          <span class="product-price">$150 per speaker</span>
+        </div>
+        <div class="product-item">
+          <span class="product-name">16' Black Valour Drape 8' Section</span>
+          <span class="product-price">$120 per section</span>
+        </div>
+        <div class="product-item">
+          <span class="product-name">Wireless Microphone System</span>
+          <span class="product-price">$125</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function calculate() {
+      var userInput = document.getElementById("user-input").value;
+      var result = userInput * 0.066;
+      document.getElementById("result").innerHTML = " The customer should receive an added value up to: " + "$" + result.toFixed(2);
+      
+      var sliderFill = document.querySelector(".slider-fill");
+      var sliderThumb = document.querySelector(".slider-thumb");
+      var smiley = document.getElementById("smiley");
+      var productSection = document.getElementById("product-section");
+      
+      var percentage = (result / 100) * 100;
+      sliderFill.style.width = percentage + "%";
+      
+      if (percentage >= 75) {
+        sliderThumb.style.backgroundColor = "#4CAF50";
+        smiley.innerHTML = "😄";
+        smiley.classList = "smiley smiley-good";
+      } else if (percentage >= 50) {
+        sliderThumb.style.backgroundColor = "orange";
+        smiley.innerHTML = "😐";
+        smiley.classList = "smiley smiley-okay";
+      } else {
+        sliderThumb.style.backgroundColor = "red";
+        smiley.innerHTML = "😞";
+        smiley.classList = "smiley smiley-bad";
+      }
+
+      productSection.style.display = "block";
+    }
+  </script>
+</body>
+</html>
