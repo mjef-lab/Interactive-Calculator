@@ -321,29 +321,35 @@
       var productList = document.getElementById("product-list");
       productList.innerHTML = "";
 
-     // Filter products whose integer values, when added together, align with the result value
-      var result = parseFloat(document.getElementById("result").textContent.split(" ")[4]);
-      var recommendedProducts = [];
+     
+    // Get the result value
+    var result = parseFloat(document.getElementById("result").textContent.split(" ")[4]);
 
-      for (var product in products) {
-        var productValue = parseFloat(products[product].replace("$", "").replace("per", "").trim());
-        if (!isNaN(productValue) && Number.isInteger(result / productValue)) {
-          recommendedProducts.push({ name: product, value: productValue });
-        }
-      }
+    // Filter products whose integer values, when added together, align with the result value
+    var recommendedProducts = [];
 
-      if (recommendedProducts.length === 0) {
-        productList.innerHTML = "No products available that closely align with the result value.";
-      } else {
-        for (var i = 0; i < recommendedProducts.length; i++) {
-          var productItem = document.createElement("div");
-          productItem.className = "product-item";
-          productItem.innerHTML = '<span class="product-name">' + recommendedProducts[i].name + '</span>' +
-            '<span class="product-price">$' + recommendedProducts[i].value.toFixed(2) + '</span>';
-          productList.appendChild(productItem);
-        }
+    for (var product in products) {
+      var productValue = parseFloat(products[product].replace("$", "").replace("per", "").trim());
+      if (!isNaN(productValue)) {
+        recommendedProducts.push({ name: product, value: productValue, deviation: Math.abs(result - productValue) });
       }
     }
+
+    // Sort the recommended products based on deviation (closest to the result value comes first)
+    recommendedProducts.sort((a, b) => a.deviation - b.deviation);
+
+    if (recommendedProducts.length === 0) {
+      productList.innerHTML = "No products available that closely align with the result value.";
+    } else {
+      for (var i = 0; i < recommendedProducts.length; i++) {
+        var productItem = document.createElement("div");
+        productItem.className = "product-item";
+        productItem.innerHTML = '<span class="product-name">' + recommendedProducts[i].name + '</span>' +
+          '<span class="product-price">$' + recommendedProducts[i].value.toFixed(2) + '</span>';
+        productList.appendChild(productItem);
+      }
+    }
+  }
 
 	 function calculate() {
       var userInput = document.getElementById("user-input").value;
