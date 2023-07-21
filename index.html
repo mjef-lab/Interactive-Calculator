@@ -6,10 +6,46 @@
     body {
       font-family: Arial, sans-serif;
       text-align: center;
+      background-image: url("https://i.pinimg.com/originals/ec/49/9b/ec499b4ec7b75982d27855018587e2df.jpg");
+      background-repeat: no-repeat;
+      background-size: cover;
+
+	
     }
     
-    .container {
+   
+
+	h2 {
+  /* Other styles for the header */
+   	
+  /* Gradient text animation */
+  background: linear-gradient(92deg, #0004ff, #ff00f2);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  animation: move-bg 8s ease-in-out infinite;
+
+  font-size: 60px;
+}
+
+@keyframes gradientText {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+
+
+
+	.container {
       margin-top: 100px;
+    	
     }
     
     .input-label {
@@ -20,7 +56,7 @@
     .input-box {
       margin: 10px;
       padding: 5px;
-      width: 200px;
+      width: 150px;
       font-size: 16px;
     }
     
@@ -38,7 +74,7 @@
       font-size: 16px;
       background-color: #4CAF50;
       color: white;
-      border: none;
+      border: inset;
       cursor: pointer;
     }
     
@@ -51,21 +87,22 @@
       margin: 20px auto;
     }
     
-    .slider-thumb {
+    /* Commented out for the aesthetic look of the website. The comment out ends at 'slider fill'
+      .slider-thumb {
       width: 40px;
       height: 40px;
       border-radius: 50%;
-      background-color: #4CAF50;
+      background-color: #AF4CAB;
       cursor: pointer;
       transition: background-color 0.3s ease;
     }
     
     .slider-thumb:hover {
-      background-color: #45a049;
+      background-color: #AF4CAB;
     }
     
     .slider-track {
-      width: 100%;
+      width: 10%;
       height: 10px;
       background-color: #ccc;
       margin-top: 15px;
@@ -74,11 +111,11 @@
     
     .slider-fill {
       height: 10px;
-      background-color: #4CAF50;
-    }
+      background-color: #AF4CAB;
+    }*/
     
     .smiley {
-      font-size: 30px;
+      font-size: 40px;
       margin-top: 20px;
     }
     
@@ -94,9 +131,15 @@
       color: red;
     }
     
+    .smiley-poop {
+      font-size: 30px;
+      margin-top: 20px;
+      color: brown;
+    }
+    
     .product-list {
       margin-top: 20px;
-      text-align: left;
+      text-align: center;
     }
     
     .product-item {
@@ -112,14 +155,21 @@
     .product-price {
       display: inline-block;
     }
+
+    .banner {
+      font-size: 30px;
+      margin-top: 20px;
+      color: white;
+    }
   </style>
 </head>
 <body>
   <div class="container">
     <h2>Happy Customer Calculator</h2>
-    <label for="user-input" class="input-label">Enter a value:</label>
-    <input type="number" id="user-input" class="input-box" placeholder="Enter Job Contract Total" />
-    <button onclick="calculate()">Calculate</button>
+    <label for="user-input" class="input-label">Enter the customer contract total:</label>
+    <input type="number" id="user-input" class="input-box" placeholder="Enter a number" />
+    <button onclick="startGame()">Calculate</button>
+    <button onclick="resetGame()">Reset</button>
     <div id="result" class="result-box"></div>
     <div class="slider">
       <div class="slider-track">
@@ -129,62 +179,175 @@
     </div>
     <div id="smiley" class="smiley"></div>
     <div id="product-section" style="display: none;">
-      <div class="product-list">
-        <h3>Recommended Products:</h3>
-        <div class="product-item">
-          <span class="product-name">Wireless Uplights</span>
-          <span class="product-price">$60 per light fixture</span>
-        </div>
-        <div class="product-item">
-          <span class="product-name">LCD Projection Pkg 7k6x10</span>
-          <span class="product-price">$750</span>
-        </div>
-        <div class="product-item">
-          <span class="product-name">K10 Speakers</span>
-          <span class="product-price">$150 per speaker</span>
-        </div>
-        <div class="product-item">
-          <span class="product-name">16' Black Valour Drape 8' Section</span>
-          <span class="product-price">$120 per section</span>
-        </div>
-        <div class="product-item">
-          <span class="product-name">Wireless Microphone System</span>
-          <span class="product-price">$125</span>
-        </div>
-      </div>
+      <h3>Select a category:</h3>
+      <select id="category-select" onchange="updateRecommendations()">
+        <option value="tradeshow">Tradeshow</option>
+        <option value="audiovisual">Audio Visual</option>
+        <option value="graphicdesign">Graphic Design</option>
+	<option value="wedding">Wedding</option>
+      </select>
+      <div class="product-list" id="product-list"></div>
     </div>
+    <div id="banner" class="banner"></div>
   </div>
-
+	
   <script>
-    function calculate() {
-      var userInput = document.getElementById("user-input").value;
-      var result = userInput * 0.066;
-      document.getElementById("result").innerHTML = " The customer should receive an added value up to: " + "$" + result.toFixed(2);
-      
+    var tradeshowProducts = {
+      "Custom Printed Banners": "$150",
+      "Tradeshow Audio Package": "$460",
+      "iPad Floor Stand w/Banner Holder": "$175",
+      "Halogen Booth light with clamp": "$60"	
+    };
+
+    var audioVisualProducts = {
+      "Wireless LED Fixture": "$60",
+      "LCD Projection Package 4K6x10": "$400",
+      "UHF Wireless Mic System (Lav or Handheld": "$125",
+      "16' Black Velour Drape Package-8' section": "$120",
+      "Wireless PowerPoint Remote": "$35"
+    };
+
+    var graphicDesignProducts = {
+      "Logo- add to Booth Sign": "$5",
+      "Light Tower w/ Full Color Graphic Design": "$375",
+      "4'x 8' Custom Banner": "$320",
+      "3' x 6' Custom Banner": "$180"
+    };
+
+     var weddingProducts = {
+      "Diamond Package": "$500",
+      "4' White Sapphire Fabric Swag- Prehung": "$40",
+      "15' x 21' Dance Floor Package": "$599",
+      "3' x 6' Custom Banner": "$180"
+    };
+
+    var countdownInterval;
+    var gameActive = false;
+
+    function startGame() {
+      if (!gameActive) {
+        var userInput = document.getElementById("user-input").value;
+        if (!userInput) {
+          alert("Please enter the total amount of the customer contract.");
+          return;
+        }
+        
+        var result = userInput * 0.06;
+        document.getElementById("result").innerHTML = "Add value for the customer up to the amount of: $" + result.toFixed(2);
+
+        var sliderFill = document.querySelector(".slider-fill");
+        var sliderThumb = document.querySelector(".slider-thumb");
+        var smiley = document.getElementById("smiley");
+        var productSection = document.getElementById("product-section");
+        
+        var percentage = (result / 100) * 100;
+        sliderFill.style.width = percentage + "%";
+        
+        if (percentage >= 75) {
+          sliderThumb.style.backgroundColor = "#4CAF50";
+          smiley.innerHTML = "😄";
+          smiley.classList = "smiley smiley-good";
+        } else if (percentage >= 50) {
+          sliderThumb.style.backgroundColor = "orange";
+          smiley.innerHTML = "😐";
+          smiley.classList = "smiley smiley-okay";
+        } else if (percentage >= 25) {
+          sliderThumb.style.backgroundColor = "red";
+          smiley.innerHTML = "😞";
+          smiley.classList = "smiley smiley-bad";
+        } else {
+          smiley.innerHTML = "💩";
+          smiley.classList = "smiley-poop";
+          gameActive = true;
+          countdownInterval = setInterval(countdownTimer, 1000);
+        }
+
+        productSection.style.display = "block";
+        updateRecommendations();
+      }
+    }
+
+    function resetGame() {
+      document.getElementById("user-input").value = "";
+      document.getElementById("result").innerHTML = "";
       var sliderFill = document.querySelector(".slider-fill");
       var sliderThumb = document.querySelector(".slider-thumb");
       var smiley = document.getElementById("smiley");
       var productSection = document.getElementById("product-section");
+      var banner = document.getElementById("banner");
+
+      sliderFill.style.width = "0%";
+      sliderThumb.style.backgroundColor = "#4CAF50";
+      smiley.innerHTML = "";
+      smiley.classList = "smiley";
+      banner.innerHTML = "";
+
+      productSection.style.display = "none";
+      document.getElementById("product-list").innerHTML = "";
       
-      var percentage = (result / 100) * 100;
-      sliderFill.style.width = percentage + "%";
-      
-      if (percentage >= 75) {
-        sliderThumb.style.backgroundColor = "#4CAF50";
-        smiley.innerHTML = "😄";
-        smiley.classList = "smiley smiley-good";
-      } else if (percentage >= 50) {
-        sliderThumb.style.backgroundColor = "orange";
-        smiley.innerHTML = "😐";
-        smiley.classList = "smiley smiley-okay";
+      clearInterval(countdownInterval);
+      gameActive = false;
+    }
+
+    function countdownTimer() {
+      var banner = document.getElementById("banner");
+      var timer = parseInt(banner.innerHTML);
+      if (timer === 0) {
+        clearInterval(countdownInterval);
+        gameActive = false;
+        banner.innerHTML = "Keep the Customer Happy";
+        setTimeout(resetGame, 10000);
       } else {
-        sliderThumb.style.backgroundColor = "red";
-        smiley.innerHTML = "😞";
-        smiley.classList = "smiley smiley-bad";
+        banner.innerHTML = timer - 1;
+      }
+    }
+
+    function updateRecommendations() {
+      var category = document.getElementById("category-select").value;
+      var products = {};
+
+      if (category === "tradeshow") {
+        products = tradeshowProducts;
+      } else if (category === "audiovisual") {
+        products = audioVisualProducts;
+      } else if (category === "graphicdesign") {
+        products = graphicDesignProducts;
+      }
+	else if (category === "wedding") {
+        products = weddingProducts;
       }
 
-      productSection.style.display = "block";
+      var productList = document.getElementById("product-list");
+      productList.innerHTML = "";
+
+      for (var product in products) {
+        var productItem = document.createElement("div");
+        productItem.className = "product-item";
+        productItem.innerHTML = '<span class="product-name">' + product + '</span>' +
+          '<span class="product-price">' + products[product] + '</span>';
+        productList.appendChild(productItem);
+      }
     }
+
+	 function calculate() {
+      var userInput = document.getElementById("user-input").value;
+
+      if (!userInput) {
+        // If the input is empty, clear the results box
+        document.getElementById("result").textContent = "";
+        return;
+      }
+
+      // Perform the calculation and display the result in the results box
+      var result = userInput * 0.066;
+      document.getElementById("result").textContent = "Add value for customer: " + result.toFixed(2);
+    }
+
+    // Add event listener to the input field
+    document.getElementById("user-input").addEventListener("input", function() {
+      // When the input field's value changes, clear the results box
+      document.getElementById("result").textContent = "";
+    });
   </script>
 </body>
 </html>
