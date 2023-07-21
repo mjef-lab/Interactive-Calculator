@@ -327,12 +327,13 @@
     // Get the result value
     var result = parseFloat(document.getElementById("result").textContent.split(" ")[4]);
 
-    if (isNaN(result)) {
+    //Commented out due to the message displays not the product list
+    /* if (isNaN(result)) {
         productList.innerHTML = "Please calculate a valid result first.";
         return;
-      }	    
-
-    // Filter products whose integer values, when added together, align with the result value
+      }	*/
+	    
+   // Filter products whose integer values, when added together, align with the result value
     var recommendedProducts = [];
 
     for (var product in products) {
