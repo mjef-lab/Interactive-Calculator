@@ -346,7 +346,7 @@
     // Sort the recommended products based on deviation (closest to the result value comes first)
     recommendedProducts.sort((a, b) => a.deviation - b.deviation);
 
-    if (recommendedProducts.length === 0) {
+    if (result <= 500) {
       productList.innerHTML = "No products available that closely align with the result value.";
     } else {
       for (var i = 0; i < recommendedProducts.length; i++) {
