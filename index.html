@@ -321,12 +321,27 @@
       var productList = document.getElementById("product-list");
       productList.innerHTML = "";
 
+     // Filter products whose integer values, when added together, align with the result value
+      var result = parseFloat(document.getElementById("result").textContent.split(" ")[4]);
+      var recommendedProducts = [];
+
       for (var product in products) {
-        var productItem = document.createElement("div");
-        productItem.className = "product-item";
-        productItem.innerHTML = '<span class="product-name">' + product + '</span>' +
-          '<span class="product-price">' + products[product] + '</span>';
-        productList.appendChild(productItem);
+        var productValue = parseFloat(products[product].replace("$", "").replace("per", "").trim());
+        if (!isNaN(productValue) && Number.isInteger(result / productValue)) {
+          recommendedProducts.push({ name: product, value: productValue });
+        }
+      }
+
+      if (recommendedProducts.length === 0) {
+        productList.innerHTML = "No products available that closely align with the result value.";
+      } else {
+        for (var i = 0; i < recommendedProducts.length; i++) {
+          var productItem = document.createElement("div");
+          productItem.className = "product-item";
+          productItem.innerHTML = '<span class="product-name">' + recommendedProducts[i].name + '</span>' +
+            '<span class="product-price">$' + recommendedProducts[i].value.toFixed(2) + '</span>';
+          productList.appendChild(productItem);
+        }
       }
     }
 
@@ -336,6 +351,12 @@
       if (!userInput) {
         // If the input is empty, clear the results box
         document.getElementById("result").textContent = "";
+        return;
+      }
+
+      // If the user attempts to calculate any integer equal to or less than 35, prompt the user to increase sales offering		 
+      if (value <= 500) { 
+        document.getElementById("result").textContent = "Increase sales offering and try again";
         return;
       }
 
